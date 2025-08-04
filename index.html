@@ -62,20 +62,29 @@
 
   let canSeek = false;
 
-  player.on('ended', () => {
-    canSeek = true; // setelah selesai, boleh seek
-  });
-
-  player.on('seeking', () => {
-    if (!canSeek) {
-      const last = player.lastTime || 0;
-      player.currentTime = last;
-      player.play(); // Play ulang agar tidak macet
+  // Fungsi bantu untuk men-disable seekbar
+  function disableSeekBar() {
+    const progress = document.querySelector('.plyr__progress input[type="range"]');
+    if (progress) {
+      progress.setAttribute('disabled', 'disabled');
     }
+  }
+
+  // Fungsi untuk mengaktifkan seekbar kembali
+  function enableSeekBar() {
+    const progress = document.querySelector('.plyr__progress input[type="range"]');
+    if (progress) {
+      progress.removeAttribute('disabled');
+    }
+  }
+
+  player.on('ready', () => {
+    disableSeekBar(); // Disable di awal
   });
 
-  player.on('timeupdate', () => {
-    player.lastTime = player.currentTime;
+  player.on('ended', () => {
+    canSeek = true;
+    enableSeekBar(); // Boleh seek setelah selesai
   });
 </script>
 </body>
