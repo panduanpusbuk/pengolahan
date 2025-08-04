@@ -56,25 +56,27 @@
 <!-- JavaScript diletakkan di bawah semua elemen -->
   <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
   <script>
-    const player = new Plyr('#player', {
-      controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-    });
+  const player = new Plyr('#player', {
+    controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+  });
 
-    let canSeek = false;
+  let canSeek = false;
 
-    player.on('ended', () => {
-      canSeek = true; // setelah selesai, boleh seek
-    });
+  player.on('ended', () => {
+    canSeek = true; // setelah selesai, boleh seek
+  });
 
-    player.on('seeking', () => {
-      if (!canSeek) {
-        player.currentTime = player.lastTime || 0;
-      }
-    });
+  player.on('seeking', () => {
+    if (!canSeek) {
+      const last = player.lastTime || 0;
+      player.currentTime = last;
+      player.play(); // Play ulang agar tidak macet
+    }
+  });
 
-    player.on('timeupdate', () => {
-      player.lastTime = player.currentTime;
-    });
-  </script>
+  player.on('timeupdate', () => {
+    player.lastTime = player.currentTime;
+  });
+</script>
 </body>
 </html>
