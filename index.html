@@ -46,18 +46,9 @@
         <p class="bullet-di">Punggung Buku</p>
         <h4>Kover Bab</h4>
         </div>
-        <video id="myVideo" width="640" height="360" autoplay controls="false" disablePictureInPicture controlsList="nodownload noremoteplayback noplaybackrate">
-        <source src="Penawaran%20Ilustrator.mp4" type="video/mp4">
-        Browser tidak mendukung video.
-        </video>
-        <iframe
-  src="https://drive.google.com/file/d/1u7aRt1UW5MwBAew7hC0QqEJwmv2g28Mb/preview"
-  width="640"
-  height="360"
-  allow="autoplay"
-  allowfullscreen
-  style="border: none;"
-></iframe>
+        <video id="player" playsinline controls>
+    <source src="https://res.cloudinary.com/dpgwin9e5/video/upload/v1754297821/Penawaran_Ilustrator_jwmcyk.mp4" type="video/mp4" />
+  </video>
         <footer class="footer">
           <p>© Pusat Perbukuan 2024</p>
         </footer>
@@ -66,26 +57,27 @@
     </div> <!-- /container -->
   
 <!-- JavaScript diletakkan di bawah semua elemen -->
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
   <script>
-  const video = document.getElementById('myVideo');
+    const player = new Plyr('#player', {
+      controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+    });
 
-  // Mencegah user seek
-  let lastTime = 0;
+    let canSeek = false;
 
-  video.addEventListener('timeupdate', function () {
-    if (Math.abs(video.currentTime - lastTime) > 0.3) {
-      video.currentTime = lastTime;
-    } else {
-      lastTime = video.currentTime;
-    }
-  });
+    player.on('ended', () => {
+      canSeek = true; // setelah selesai, boleh seek
+    });
 
-  // Nonaktifkan shortcut keyboard
-  window.addEventListener('keydown', function (e) {
-    if (['ArrowLeft', 'ArrowRight', ' ', 'k', 'j', 'l'].includes(e.key)) {
-      e.preventDefault();
-    }
-  });
-</script>
+    player.on('seeking', () => {
+      if (!canSeek) {
+        player.currentTime = player.lastTime || 0;
+      }
+    });
+
+    player.on('timeupdate', () => {
+      player.lastTime = player.currentTime;
+    });
+  </script>
 </body>
 </html>
